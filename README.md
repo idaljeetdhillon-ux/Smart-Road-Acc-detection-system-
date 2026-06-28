@@ -99,7 +99,9 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
+## 📌 Note
 
+The dataset and trained model files are not included in this repository because they exceed GitHub's file size limits. They are available upon request for academic and demonstration purposes.
 ---
 
 ## 🔄 Development Workflow
