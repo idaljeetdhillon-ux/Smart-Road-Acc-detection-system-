@@ -79,7 +79,7 @@ Smart-Road-Accident-Detection-System/
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/Smart-Road-Accident-Detection-System.git
+git clone https://github.com/idaljeetdhillon-ux/Smart-Road-Accident-Detection-System.git
 ```
 
 ### Navigate to the Project Folder
