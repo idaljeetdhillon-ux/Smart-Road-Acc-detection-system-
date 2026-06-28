@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Smart Accident Dashboard</title>
+
+<!-- Leaflet Map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+}
+
+/* Layout */
+.dashboard {
+    display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background: #020617;
+    height: 100vh;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    color: #38bdf8;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* Main */
+.main {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Cards */
+.cards {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.card {
+    flex: 1;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.high { background: #dc2626; }
+.medium { background: #facc15; color: black; }
+.low { background: #16a34a; }
+
+/* Map */
+#map {
+    height: 400px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* Feed */
+.feed {
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 10px;
+    height: 200px;
+    overflow-y: auto;
+}
+
+.alert {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.alert.high { background: #7f1d1d; }
+.alert.medium { background: #713f12; }
+.alert.low { background: #14532d; }
+
+</style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>🚦 Smart Traffic</h2>
+        <ul>
+            <li>Dashboard</li>
+            <li>Live Accidents</li>
+            <li>Reports</li>
+        </ul>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+
+        <!-- Stats -->
+        <div class="cards">
+            <div class="card">Total: <span id="total">0</span></div>
+            <div class="card high">High: <span id="high">0</span></div>
+            <div class="card medium">Medium: <span id="medium">0</span></div>
+            <div class="card low">Low: <span id="low">0</span></div>
+        </div>
+
+        <!-- Map -->
+        <div id="map"></div>
+
+        <!-- Live Feed -->
+        <div class="feed" id="feed"></div>
+
+    </div>
+
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+
+// Initialize Map
+var map = L.map('map').setView([28.6139, 77.2090], 12);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// Stats
+let total = 0, high = 0, medium = 0, low = 0;
+
+// Function to add accident
+function addAccident(lat, lng, severity) {
+
+    let color;
+    if (severity === "High") {
+        color = "red";
+        high++;
+    } else if (severity === "Medium") {
+        color = "orange";
+        medium++;
+    } else {
+        color = "green";
+        low++;
+    }
+
+    total++;
+
+    // Add marker
+    L.circleMarker([lat, lng], {
+        color: color,
+        radius: 8
+    }).addTo(map)
+      .bindPopup(`<b>${severity} Accident</b><br>${lat}, ${lng}`);
+
+    // Update stats
+    document.getElementById("total").innerText = total;
+    document.getElementById("high").innerText = high;
+    document.getElementById("medium").innerText = medium;
+    document.getElementById("low").innerText = low;
+
+    // Add to feed
+    let feed = document.getElementById("feed");
+    let div = document.createElement("div");
+    div.className = "alert " + severity.toLowerCase();
+    div.innerText = `🚨 ${severity} Accident at (${lat}, ${lng})`;
+    feed.prepend(div);
+}
+
+// 🔥 Demo Data (Simulating real-time)
+setInterval(() => {
+    let lat = 28.55 + Math.random() * 0.15;
+    let lng = 77.15 + Math.random() * 0.15;
+
+    let types = ["High", "Medium", "Low"];
+    let severity = types[Math.floor(Math.random() * 3)];
+
+    addAccident(lat, lng, severity);
+
+}, 3000);
+
+</script>
+
+</body>
+</html>
